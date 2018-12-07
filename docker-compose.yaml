@@ -10,7 +10,6 @@ services:
       - CGO_ENABLED=0
     command: |
       bash -c " \
-      git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com/".insteadOf "https://github.com/"
       echo '=== Setup ===' && \
       go get -u github.com/oxequa/realize && \
       realize start"
