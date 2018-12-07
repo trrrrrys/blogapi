@@ -1,7 +1,7 @@
 
 # Usage
 
-# Create vereify-token Package
+## Create vereify-token Package
 ```
 $ mkdir ./library/verify-token
 $ vim ./library/verify-token/verify.go
@@ -22,7 +22,7 @@ func (t *VerifyClient) VerifyToken(token string) bool {
 }
 ```
 
-# Run Cloud Datastore emutrator
+## Run Cloud Datastore emutrator
 [Cloud Datastore エミュレータの実行  |  Cloud Datastore ドキュメント  |  Google Cloud](https://cloud.google.com/datastore/docs/tools/datastore-emulator)
 
 ```
