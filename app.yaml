@@ -1,0 +1,9 @@
+runtime: go111
+# version: 1
+handlers:
+# All URLs are handled by the Go application script
+- url: /.*
+  script: auto
+
+includes:
+- secret.yaml

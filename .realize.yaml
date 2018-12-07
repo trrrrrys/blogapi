@@ -1,0 +1,22 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: blog-api
+  path: ./cmd/api
+  commands: 
+    run:
+      status: true
+  watcher:
+    extensions:
+    - go
+    - toml
+    - yaml
+    paths:
+    - ../..
+    ignore:
+      paths:
+      - .git
+      - .realize
+      - vendor
