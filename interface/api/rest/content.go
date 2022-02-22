@@ -6,6 +6,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	validator "github.com/go-playground/validator/v10"
+	"github.com/unrolled/render"
 )
 
 type ContentHandler interface {
@@ -15,11 +18,15 @@ type ContentHandler interface {
 func NewContentHandler(cu usecase.ContentUseCase) ContentHandler {
 	return &contentHandler{
 		ContentUseCase: cu,
+		rendering:      render.New(render.Options{}),
+		validate:       validator.New(),
 	}
 }
 
 type contentHandler struct {
 	ContentUseCase usecase.ContentUseCase
+	rendering      *render.Render
+	validate       *validator.Validate
 }
 
 type createContetnRequest struct {
@@ -33,13 +40,13 @@ func (h *contentHandler) CreateContent(w http.ResponseWriter, r *http.Request) {
 	var reqest createContetnRequest
 	if err := json.NewDecoder(r.Body).Decode(&reqest); err != nil {
 		log.Println(err.Error())
-		rendering.JSON(w, http.StatusInternalServerError, &Response{err.Error()})
+		h.rendering.JSON(w, http.StatusInternalServerError, &Response{err.Error()})
 		return
 	}
 	// バリデーション
-	if err := validate.Struct(&reqest); err != nil {
+	if err := h.validate.Struct(&reqest); err != nil {
 		log.Println(err.Error())
-		rendering.JSON(w, http.StatusInternalServerError, &Response{err.Error()})
+		h.rendering.JSON(w, http.StatusInternalServerError, &Response{err.Error()})
 		return
 	}
 	tags := make([]*model.Tag, len(reqest.Tags))
@@ -55,10 +62,10 @@ func (h *contentHandler) CreateContent(w http.ResponseWriter, r *http.Request) {
 	}
 	err := h.ContentUseCase.CreateContent(ctx, c)
 	if err != nil {
-		rendering.JSON(w, http.StatusInternalServerError, &Response{err.Error()})
+		h.rendering.JSON(w, http.StatusInternalServerError, &Response{err.Error()})
 		return
 	}
-	rendering.JSON(w, http.StatusCreated, &Response{"content created"})
+	h.rendering.JSON(w, http.StatusCreated, &Response{"content created"})
 }
 
 type Response struct {

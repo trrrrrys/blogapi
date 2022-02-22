@@ -4,6 +4,7 @@ import (
 	"blog-api/application/usecase"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/graphql-go/graphql"
 )
@@ -77,7 +78,7 @@ var contentType = graphql.NewObject(
 					if ok {
 						return c.Tags, nil
 					}
-					return nil, errors.New("Tags error")
+					return nil, errors.New("tags error")
 				},
 			},
 			"publish_date": &graphql.Field{
@@ -132,7 +133,7 @@ var tagType = graphql.NewObject(
 	})
 
 func (h *contentHandler) Query(p graphql.ResolveParams) (interface{}, error) {
-
+	log.Println(p)
 	l, ok := p.Args["limit"].(int)
 	ctx := p.Context
 	if !ok {

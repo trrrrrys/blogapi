@@ -1,4 +1,4 @@
-package datastore
+package infrastructure
 
 import "cloud.google.com/go/datastore"
 

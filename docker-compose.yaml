@@ -1,18 +1,46 @@
 version: '3'
 services:
   app:
-    image: golang:1.11.1
+    image: golang:1.18rc1
+    env_file: .env
     volumes:
       - ./:/api/blog-api/
     working_dir: /api/blog-api/
     environment:
       - GO111MODULE=on 
       - CGO_ENABLED=0
+      - DATASTORE_DATASET=$PROJECT
+      - DATASTORE_EMULATOR_HOST=datastore:8765
+      - DATASTORE_EMULATOR_HOST_PATH=datastore:8765/datastore
+      - DATASTORE_HOST=datastore:8765
+      - DATASTORE_PROJECT_ID=$PROJECT
+      - PORT=8080
     command: |
       bash -c " \
       echo '=== Setup ===' && \
-      go get -u github.com/oxequa/realize && \
-      realize start"
+      echo '=== env ===' && \
+      echo $PROJECT && \
+      echo && \
+      go install github.com/cosmtrek/air@latest && \
+      air -c .air.toml"
     ports:
       - 8080:8080
       - 6666:6060
+    networks:
+      - mynetwork
+  datastore:
+    image: google/cloud-sdk
+    env_file: .env
+    command: |
+      bash -c " \
+      gcloud config set project $$PROJECT && \
+      gcloud config list && \
+      echo '=== config ===' && \
+      gcloud beta emulators datastore start --project=$$PROJECT --host-port 0.0.0.0:8765"
+    ports:
+      - 8765:8765
+    networks:
+      - mynetwork
+networks:
+  mynetwork:
+      external: true

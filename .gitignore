@@ -17,3 +17,6 @@ vendor
 library/verify-token/
 secret.yaml
 
+bin
+.env
+tmp

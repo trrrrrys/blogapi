@@ -7,8 +7,6 @@ import (
 
 	"github.com/unrolled/render"
 
-	"blog-api/library/verify-token"
-
 	"github.com/gorilla/handlers"
 	"github.com/urfave/negroni"
 )
@@ -44,13 +42,13 @@ func VerifyToken(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) 
 		if r.URL.Path == target.Path && r.Method == target.Method {
 			authHeader := r.Header.Get("Authorization")
 			token := strings.Replace(authHeader, "Bearer ", "", 1)
-			vc := verify.NewVerifyClient()
-			if !vc.VerifyToken(token) {
-				log.Println("Verify Error")
-				// エラー処理
-				rendering.JSON(w, http.StatusUnauthorized, "Error")
-				return
-			}
+			// vc := verify.NewVerifyClient()
+			// if !vc.VerifyToken(token) {
+			// 	log.Println("Verify Error")
+			// 	// エラー処理
+			// 	rendering.JSON(w, http.StatusUnauthorized, "Error")
+			// 	return
+			// }
 			log.Printf("Verify Token %v\n", token)
 		}
 	}

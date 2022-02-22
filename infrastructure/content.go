@@ -1,6 +1,7 @@
-package datastore
+package infrastructure
 
 import (
+	"blog-api/config"
 	"blog-api/domain/model"
 	"blog-api/domain/repository"
 	"context"
@@ -10,9 +11,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-func NewContentRepository(pID string) repository.ContentRepository {
+func NewContentRepository(c *config.Config) repository.ContentRepository {
 	return &contentRepository{
-		projectID: pID,
+		projectID: c.ProjectID,
 	}
 }
 
@@ -47,13 +48,13 @@ func (r *contentRepository) GetContets(ctx context.Context, limit int) ([]*model
 	dsClient, err := datastore.NewClient(ctx, r.projectID)
 	if err != nil {
 		fmt.Println(err.Error())
-		return nil, errors.Wrap(err, "datastore connection;")
+		return nil, errors.Wrap(err, "datastore connection:")
 	}
 	var ce []*contentEntity
 	query := datastore.NewQuery(kindContent).Limit(limit)
 	if _, err := dsClient.GetAll(ctx, query, &ce); err != nil {
 		fmt.Println(err.Error())
-		return nil, errors.Wrap(err, "datastore GetContents;")
+		return nil, errors.Wrap(err, "datastore GetContents:")
 	}
 
 	contents := make([]*model.Content, len(ce))
